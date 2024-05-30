@@ -22,6 +22,10 @@ export class PrimaryStarCategory {
     ]
   };
 
+  get starCategories(): string[] {
+    return this.table.values.map(value => value.category);
+  }
+
   GetPrimaryStarCategory(roll: number): string {
     let result = this.table.values
       .filter(value => value.rangeStart <= roll && value.rangeEnd >= roll)

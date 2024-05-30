@@ -1,0 +1,13 @@
+<b>Primary Star Mass</b>
+<br/>
+
+<mat-divider></mat-divider>
+
+<mat-form-field id="primaryStarCategoryFormField">
+  <mat-label>Primary Star Category</mat-label>
+  <mat-select id="primaryStarCategorySelect" [formControl]="form.controls.primaryStarCategory">
+    @for (category of starCategories; track category) {
+      <mat-option [value]="category">{{category}}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
