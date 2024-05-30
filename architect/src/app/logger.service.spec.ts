@@ -15,7 +15,7 @@ describe('LoggerService', () => {
   });
 
   it('should send a debug message', () => {
-    const debugSpy = jest.spyOn(console, 'debug');
+    const debugSpy = jest.spyOn(console, 'debug').mockImplementation(() => {});
 
     service.debug('This is a debug message.');
 
@@ -27,7 +27,7 @@ describe('LoggerService', () => {
   });
 
   it('should send a log message', () => {
-    const logSpy = jest.spyOn(console, 'log');
+    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
     service.log('This is a log message.');
 
@@ -39,7 +39,7 @@ describe('LoggerService', () => {
   });
 
   it('should send a warn message', () => {
-    const warnSpy = jest.spyOn(console, 'warn');
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
     service.warn('This is a warn message.');
 
@@ -51,7 +51,7 @@ describe('LoggerService', () => {
   });
 
   it('should send an error message', () => {
-    const errorSpy = jest.spyOn(console, 'error');
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     service.error('This is an error message.');
 

@@ -29,6 +29,8 @@ describe('RollService', () => {
       expect(debugSpy).toHaveBeenCalled();
       expect(debugSpy).toHaveBeenCalledTimes(1);
       expect(debugSpy).toHaveBeenCalledWith(`Min Bound: 1, Max Bound: 100, Roll: ${roll}`);
+
+      debugSpy.mockRestore();
     });
   });
 });
