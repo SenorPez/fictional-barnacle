@@ -10,6 +10,7 @@ import {TestbedHarnessEnvironment} from "@angular/cdk/testing/testbed";
 import {MatFormFieldHarness} from "@angular/material/form-field/testing";
 import {MatSelectHarness} from "@angular/material/select/testing";
 import {MatIcon} from "@angular/material/icon";
+import {MatButtonHarness} from "@angular/material/button/testing";
 
 describe('PrimaryStarMassComponent', () => {
   let fixture: ComponentFixture<PrimaryStarMassComponent>;
@@ -68,12 +69,37 @@ describe('PrimaryStarMassComponent', () => {
       expect(await selectHarness.isMultiple()).toBeFalsy();
     });
 
-    it('should be able to select a value', async () => {
+    it('should update the form with the selected value', async () => {
+      component.form.controls.primaryStarCategory.setValue('');
+
       await selectHarness.open();
       const options = await selectHarness.getOptions();
-      const expected = await options[1].getText();
-      await options[1].click();
+      const optionIndex = Math.floor(Math.random() * options.length);
+      const expected = await options[optionIndex].getText();
+      await options[optionIndex].click();
+
       expect(await selectHarness.getValueText()).toEqual(expected);
+      expect(component.form.controls.primaryStarCategory.value).toEqual(expected);
+    });
+  });
+
+  describe('Primary Star Category random button', () => {
+    let buttonHarness: MatButtonHarness;
+
+    beforeEach(async () => {
+      buttonHarness = await loader.getHarness(MatButtonHarness.with({selector: '#primaryStarCategoryRandomButton'}));
+    });
+
+    it('should be a mat-fab button', async () => {
+      expect(await buttonHarness.getVariant()).toEqual('fab');
+    });
+
+    it('should update the form with the random value', async () => {
+      component.form.controls.primaryStarCategory.setValue('');
+
+      await buttonHarness.click();
+
+      expect(component.form.controls.primaryStarCategory.value).not.toEqual('');
     });
   });
 });

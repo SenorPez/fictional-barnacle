@@ -52,4 +52,9 @@ export class PrimaryStarMassComponent implements OnInit {
       primaryStarCategory: ['', [Validators.required]]
     });
   }
+
+  randomStarCategory(): void {
+    const category: string = this.primaryStarCategory.GetRandomPrimaryStarCategory();
+    this.form.controls.primaryStarCategory.setValue(category);
+  }
 }
