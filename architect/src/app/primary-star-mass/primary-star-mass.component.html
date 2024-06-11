@@ -1,0 +1,64 @@
+<b>Primary Star Mass</b>
+<br/>
+
+<mat-divider></mat-divider>
+
+<mat-form-field id="primaryStarCategoryFormField">
+  <mat-label>Primary Star Category</mat-label>
+  <mat-select id="primaryStarCategorySelect" [formControl]="form.controls.primaryStarCategory">
+    @for (category of starCategories; track category) {
+      <mat-option [value]="category">{{category}}</mat-option>
+    }
+  </mat-select>
+  @if (form.controls.primaryStarCategory.hasError('required')) {
+    <mat-error>Please select a primary star category.</mat-error>
+  }
+</mat-form-field>
+
+<mat-form-field id="primaryStarCategoryInput">
+  <mat-label>Primary Star Category Roll</mat-label>
+  <input matInput placeholder="1&ndash;100" [formControl]="form.controls.primaryStarCategoryRoll"/>
+  @if (form.controls.primaryStarCategoryRoll.hasError('required') ||
+  form.controls.primaryStarCategoryRoll.hasError('min') ||
+  form.controls.primaryStarCategoryRoll.hasError('max')) {
+    <mat-error>Please enter a value between 1&ndash;100.</mat-error>
+  }
+</mat-form-field>
+
+<button mat-fab id="primaryStarCategoryRandomButton" color="accent" (click)="randomPrimaryStarCategory()" [disabled]="locked">
+  <mat-icon>casino</mat-icon>
+</button>
+
+<br/>
+
+<mat-form-field id="primaryStarMassInput">
+  <mat-label>Primary Star Mass</mat-label>
+  <input matInput placeholder="{{primaryStarMassLowerBound}}&ndash;{{primaryStarMassUpperBound}}" [formControl]="form.controls.primaryStarMass"/>
+  @if (form.controls.primaryStarMass.hasError('required') ||
+    form.controls.primaryStarMass.hasError('min') ||
+    form.controls.primaryStarMass.hasError('max')) {
+    <mat-error>Please enter a value between {{primaryStarMassLowerBound}}&ndash;{{primaryStarMassUpperBound}}</mat-error>
+  }
+</mat-form-field>
+
+<mat-form-field id="primaryStarMassRollInput">
+  <mat-label>Primary Star Mass Roll</mat-label>
+  <input matInput placeholder="1&ndash;100" [formControl]="form.controls.primaryStarMassRoll"/>
+  @if (form.controls.primaryStarMassRoll.hasError('required') ||
+    form.controls.primaryStarMassRoll.hasError('min') ||
+    form.controls.primaryStarMassRoll.hasError('max')) {
+    <mat-error>Please enter a value between 1&ndash;100</mat-error>
+  }
+</mat-form-field>
+
+<button mat-fab id="primaryStarMassRandomButton" color="accent" (click)="randomPrimaryStarMass()" [disabled]="locked">
+  <mat-icon>casino</mat-icon>
+</button>
+
+<button mat-fab id="primaryStarCategoryLockButton" color="primary" (click)="lockPrimaryStarCategory()" [disabled]="form.invalid">
+  @if (locked) {
+    <mat-icon>lock</mat-icon>
+  } @else {
+    <mat-icon>lock_open</mat-icon>
+  }
+</button>
