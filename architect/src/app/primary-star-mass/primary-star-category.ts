@@ -42,7 +42,7 @@ export class PrimaryStarCategory {
   }
 
   lookupRoll(category: string): number {
-    let result = this.table.values
+    const result = this.table.values
       .filter(value => value.category === category)
       .pop();
 
@@ -55,7 +55,7 @@ export class PrimaryStarCategory {
   }
 
   lookupCategory(roll: number): string {
-    let result = this.table.values
+    const result = this.table.values
       .filter(value => value.rangeStart <= roll && value.rangeEnd >= roll)
       .pop();
 

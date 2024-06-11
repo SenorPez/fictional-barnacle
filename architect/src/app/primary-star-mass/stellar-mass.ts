@@ -130,7 +130,7 @@ export class StellarMass {
     ]
   };
 
-  getStellarMassTable(starCategory: string) {
+  private getStellarMassTable(starCategory: string) {
     const result = this.table.values
       .filter(value => value.starCategory === starCategory)
       .pop();
@@ -147,5 +147,19 @@ export class StellarMass {
       Math.min(...this.getStellarMassTable(starCategory).values.map(val => val.mass)),
       Math.max(...this.getStellarMassTable(starCategory).values.map(val => val.mass))
     ];
+  }
+
+  lookupMass(category: string, roll: number): number {
+    const table = this.getStellarMassTable(category);
+    const result = table.values
+      .filter(value => value.rangeStart <= roll && value.rangeEnd >= roll)
+      .pop();
+
+    if (result === undefined) {
+      throw new StellarMassLookupError(category, this.table, this.logger);
+    } else {
+      this.logger.debug(`Lookup Category ${category}, Lookup Roll ${roll}, Result: ${result.mass}`);
+      return result.mass;
+    }
   }
 }

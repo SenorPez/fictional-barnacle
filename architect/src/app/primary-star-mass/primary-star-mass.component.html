@@ -21,7 +21,7 @@
   @if (form.controls.primaryStarCategoryRoll.hasError('required') ||
   form.controls.primaryStarCategoryRoll.hasError('min') ||
   form.controls.primaryStarCategoryRoll.hasError('max')) {
-    <mat-error>Please enter a value between 1-100.</mat-error>
+    <mat-error>Please enter a value between 1&ndash;100.</mat-error>
   }
 </mat-form-field>
 
@@ -45,6 +45,16 @@
   @if (form.controls.primaryStarMass.hasError('required') ||
     form.controls.primaryStarMass.hasError('min') ||
     form.controls.primaryStarMass.hasError('max')) {
-    <mat-error>Please enter a value between {{primaryStarMassLowerBound}} and {{primaryStarMassUpperBound}}</mat-error>
+    <mat-error>Please enter a value between {{primaryStarMassLowerBound}}&ndash;{{primaryStarMassUpperBound}}</mat-error>
+  }
+</mat-form-field>
+
+<mat-form-field id="primaryStarMassRollInput">
+  <mat-label>Primary Star Mass Roll</mat-label>
+  <input matInput placeholder="1&ndash;100" [formControl]="form.controls.primaryStarMassRoll"/>
+  @if (form.controls.primaryStarMassRoll.hasError('required') ||
+    form.controls.primaryStarMassRoll.hasError('min') ||
+    form.controls.primaryStarMassRoll.hasError('max')) {
+    <mat-error>Please enter a value between 1&ndash;100</mat-error>
   }
 </mat-form-field>

@@ -15,6 +15,7 @@ export interface PrimaryStarMassForm {
   primaryStarCategory: FormControl<string>
   primaryStarCategoryRoll: FormControl<number>
   primaryStarMass: FormControl<number>
+  primaryStarMassRoll: FormControl<number>
 }
 
 @Component({
@@ -66,7 +67,8 @@ export class PrimaryStarMassComponent implements OnInit {
     this.form = this.fb.nonNullable.group({
       primaryStarCategory: ['Brown Dwarf', [Validators.required]],
       primaryStarCategoryRoll: [1, [Validators.required, Validators.min(1), Validators.max(100)]],
-      primaryStarMass: [0.015, [Validators.required]]
+      primaryStarMass: [0.015, [Validators.required]],
+      primaryStarMassRoll: [1, [Validators.required, Validators.min(1), Validators.max(100)]]
     });
 
     this.setPrimaryStarMassValidation();
@@ -74,11 +76,20 @@ export class PrimaryStarMassComponent implements OnInit {
     this.form.controls.primaryStarCategory.valueChanges.subscribe(category => {
       this.form.controls.primaryStarCategoryRoll.setValue(this.primaryStarCategory.lookupRoll(category), {emitEvent: false});
       this.setPrimaryStarMassValidation();
+      this.form.controls.primaryStarMassRoll.updateValueAndValidity();
     });
 
     this.form.controls.primaryStarCategoryRoll.valueChanges.subscribe(roll => {
       this.form.controls.primaryStarCategory.setValue(this.primaryStarCategory.lookupCategory(roll), {emitEvent: false});
       this.setPrimaryStarMassValidation();
+      this.form.controls.primaryStarMassRoll.updateValueAndValidity();
+    });
+
+    this.form.controls.primaryStarMassRoll.valueChanges.subscribe(roll => {
+      this.form.controls.primaryStarMass.setValue(this.primaryStarMass.lookupMass(
+        this.form.controls.primaryStarCategory.value,
+        roll
+      ));
     });
   }
 
