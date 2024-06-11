@@ -6,6 +6,17 @@ type PrimaryStarCategoryTable = {
   values: ({ rangeStart: number, rangeEnd: number, category: string })[]
 };
 
+class PrimaryStarLookupError extends RangeError {
+  constructor(value: string | number, table: PrimaryStarCategoryTable, logger: LoggerService) {
+    super();
+
+    logger.error("Lookup Value Not Found");
+    logger.error(`Lookup: ${value}`);
+    logger.error(`Table: ${table}`);
+    this.name = "PrimaryStarLookupError";
+  }
+}
+
 export class PrimaryStarCategory {
   constructor(
     private logger: LoggerService,
@@ -26,23 +37,33 @@ export class PrimaryStarCategory {
     return this.table.values.map(value => value.category);
   }
 
-  GetPrimaryStarCategory(roll: number): string {
+  roll(): number {
+    return this.table.roll();
+  }
+
+  lookupRoll(category: string): number {
+    let result = this.table.values
+      .filter(value => value.category === category)
+      .pop();
+
+    if (result === undefined) {
+      throw new PrimaryStarLookupError(category, this.table, this.logger);
+    } else {
+      this.logger.debug(`Lookup Category ${category}, Result: ${result.rangeStart}`);
+      return result.rangeStart;
+    }
+  }
+
+  lookupCategory(roll: number): string {
     let result = this.table.values
       .filter(value => value.rangeStart <= roll && value.rangeEnd >= roll)
       .pop();
 
     if (result === undefined) {
-      this.logger.error("Invalid Table Result");
-      this.logger.error(`Roll: ${roll}`);
-      this.logger.error(`Table: ${this.table}`);
-      throw new Error("Invalid Table Result");
+      throw new PrimaryStarLookupError(roll, this.table, this.logger);
     } else {
-      this.logger.debug(`Roll: ${roll}, Primary Star Category: ${result.category}`);
+      this.logger.debug(`Lookup Roll ${roll}, Result: ${result.category}`)
       return result.category;
     }
-  }
-
-  GetRandomPrimaryStarCategory(): string {
-    return this.GetPrimaryStarCategory(this.table.roll());
   }
 }

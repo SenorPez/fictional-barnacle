@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
-import {MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatError, MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {PrimaryStarCategory} from "./primary-star-category";
 import {LoggerService} from "../logger.service";
@@ -8,9 +8,11 @@ import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} fr
 import {MatDivider} from "@angular/material/divider";
 import {MatFabButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
+import {MatInput} from "@angular/material/input";
 
 export interface PrimaryStarMassForm {
   primaryStarCategory: FormControl<string>
+  primaryStarCategoryRoll: FormControl<number>
 }
 
 @Component({
@@ -24,7 +26,9 @@ export interface PrimaryStarMassForm {
     MatOption,
     MatDivider,
     MatFabButton,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatInput,
+    MatError
   ],
   templateUrl: './primary-star-mass.component.html',
   styleUrl: './primary-star-mass.component.css'
@@ -49,12 +53,23 @@ export class PrimaryStarMassComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.nonNullable.group({
-      primaryStarCategory: ['', [Validators.required]]
+      primaryStarCategory: ['Brown Dwarf', [Validators.required]],
+      primaryStarCategoryRoll: [1, [Validators.required, Validators.min(1), Validators.max(100)]]
+    }, {
+      updateOn: "blur"
+    });
+
+    this.form.controls.primaryStarCategory.valueChanges.subscribe(category => {
+      this.form.controls.primaryStarCategoryRoll.setValue(this.primaryStarCategory.lookupRoll(category), {emitEvent: false});
+    });
+
+    this.form.controls.primaryStarCategoryRoll.valueChanges.subscribe(roll => {
+      this.form.controls.primaryStarCategory.setValue(this.primaryStarCategory.lookupCategory(roll), {emitEvent: false});
     });
   }
 
-  randomStarCategory(): void {
-    const category: string = this.primaryStarCategory.GetRandomPrimaryStarCategory();
-    this.form.controls.primaryStarCategory.setValue(category);
+  randomPrimaryStarCategory(): void {
+    const roll: number = this.primaryStarCategory.roll();
+    this.form.controls.primaryStarCategoryRoll.setValue(roll);
   }
 }

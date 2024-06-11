@@ -10,8 +10,21 @@
       <mat-option [value]="category">{{category}}</mat-option>
     }
   </mat-select>
+  @if (form.controls.primaryStarCategory.hasError('required')) {
+    <mat-error>Please select a primary star category.</mat-error>
+  }
 </mat-form-field>
 
-<button mat-fab id="primaryStarCategoryRandomButton" color="accent" (click)="randomStarCategory()">
+<mat-form-field id="primaryStarCategoryInput">
+  <mat-label>Primary Star Category Roll</mat-label>
+  <input matInput placeholder="1-100" [formControl]="form.controls.primaryStarCategoryRoll">
+  @if (form.controls.primaryStarCategoryRoll.hasError('required') ||
+  form.controls.primaryStarCategoryRoll.hasError('min') ||
+  form.controls.primaryStarCategoryRoll.hasError('max')) {
+    <mat-error>Please enter a value between 1-100.</mat-error>
+  }
+</mat-form-field>
+
+<button mat-fab id="primaryStarCategoryRandomButton" color="accent" (click)="randomPrimaryStarCategory()">
   <mat-icon>casino</mat-icon>
 </button>
