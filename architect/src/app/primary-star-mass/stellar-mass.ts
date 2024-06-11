@@ -142,6 +142,10 @@ export class StellarMass {
     }
   }
 
+  roll(): number {
+    return this.table.roll();
+  }
+
   getStellarMassBounds(starCategory: string): [number, number] {
     return [
       Math.min(...this.getStellarMassTable(starCategory).values.map(val => val.mass)),

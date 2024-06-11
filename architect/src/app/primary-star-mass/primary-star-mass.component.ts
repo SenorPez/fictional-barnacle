@@ -105,6 +105,11 @@ export class PrimaryStarMassComponent implements OnInit {
     this.form.controls.primaryStarCategoryRoll.setValue(roll);
   }
 
+  randomPrimaryStarMass(): void {
+    const roll: number = this.primaryStarMass.roll();
+    this.form.controls.primaryStarMassRoll.setValue(roll);
+  }
+
   lockPrimaryStarCategory(): void {
     this.locked = !this.locked;
 
