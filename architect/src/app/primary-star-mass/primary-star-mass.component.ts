@@ -9,10 +9,12 @@ import {MatDivider} from "@angular/material/divider";
 import {MatFabButton} from "@angular/material/button";
 import {MatIcon} from "@angular/material/icon";
 import {MatInput} from "@angular/material/input";
+import {StellarMass} from "./stellar-mass";
 
 export interface PrimaryStarMassForm {
   primaryStarCategory: FormControl<string>
   primaryStarCategoryRoll: FormControl<number>
+  primaryStarMass: FormControl<number>
 }
 
 @Component({
@@ -35,10 +37,15 @@ export interface PrimaryStarMassForm {
 })
 export class PrimaryStarMassComponent implements OnInit {
   primaryStarCategory: PrimaryStarCategory;
+  primaryStarMass: StellarMass;
+
   starCategories: string[];
 
   form!: FormGroup<PrimaryStarMassForm>;
   locked!: boolean;
+
+  primaryStarMassLowerBound!: number;
+  primaryStarMassUpperBound!: number;
 
   @Output()
   formReady: EventEmitter<FormGroup<PrimaryStarMassForm>> = new EventEmitter<FormGroup<PrimaryStarMassForm>>();
@@ -49,6 +56,7 @@ export class PrimaryStarMassComponent implements OnInit {
     @Inject(RollService) roller: RollService
   ) {
     this.primaryStarCategory = new PrimaryStarCategory(logger, roller);
+    this.primaryStarMass = new StellarMass(logger, roller);
     this.starCategories = this.primaryStarCategory.starCategories;
   }
 
@@ -57,18 +65,28 @@ export class PrimaryStarMassComponent implements OnInit {
 
     this.form = this.fb.nonNullable.group({
       primaryStarCategory: ['Brown Dwarf', [Validators.required]],
-      primaryStarCategoryRoll: [1, [Validators.required, Validators.min(1), Validators.max(100)]]
-    }, {
-      updateOn: "blur"
+      primaryStarCategoryRoll: [1, [Validators.required, Validators.min(1), Validators.max(100)]],
+      primaryStarMass: [0.015, [Validators.required]]
     });
+
+    this.setPrimaryStarMassValidation();
 
     this.form.controls.primaryStarCategory.valueChanges.subscribe(category => {
       this.form.controls.primaryStarCategoryRoll.setValue(this.primaryStarCategory.lookupRoll(category), {emitEvent: false});
+      this.setPrimaryStarMassValidation();
     });
 
     this.form.controls.primaryStarCategoryRoll.valueChanges.subscribe(roll => {
       this.form.controls.primaryStarCategory.setValue(this.primaryStarCategory.lookupCategory(roll), {emitEvent: false});
+      this.setPrimaryStarMassValidation();
     });
+  }
+
+  private setPrimaryStarMassValidation() {
+    [this.primaryStarMassLowerBound, this.primaryStarMassUpperBound] = this.primaryStarMass.getStellarMassBounds(this.form.controls.primaryStarCategory.value);
+    this.form.controls.primaryStarMass.setValidators([Validators.required, Validators.min(this.primaryStarMassLowerBound), Validators.max(this.primaryStarMassUpperBound)]);
+    this.form.controls.primaryStarMass.markAsTouched();
+    this.form.controls.primaryStarMass.updateValueAndValidity();
   }
 
   randomPrimaryStarCategory(): void {

@@ -1,3 +1,6 @@
+import {LoggerService} from "../logger.service";
+import {RollService} from "../roll.service";
+
 type StellarMassTable = {
   roll: () => number,
   values: ({
@@ -8,8 +11,16 @@ type StellarMassTable = {
   })[]
 };
 
-import {LoggerService} from "../logger.service";
-import {RollService} from "../roll.service";
+class StellarMassLookupError extends RangeError {
+  constructor(value: number | string, table: StellarMassTable, logger: LoggerService) {
+    super();
+
+    logger.error("Lookup Value Not Found");
+    logger.error(`Lookup: ${value}`);
+    logger.error(`Table: ${table}`);
+    this.name = "StellarMassLookupError";
+  }
+}
 
 export class StellarMass {
   constructor(
@@ -17,7 +28,7 @@ export class StellarMass {
     private roller: RollService
   ) { }
 
-  readonly table: StellarMassTable = {
+  private readonly table: StellarMassTable = {
     roll: () => this.roller.d100(),
     values: [
       {
@@ -119,25 +130,22 @@ export class StellarMass {
     ]
   };
 
-  GetStellarMass(category: string, roll: number): number {
-    let result = this.table.values
-      .filter(value => value.starCategory === category)
-      .pop()?.values
-      .filter(value => value.rangeStart <= roll && value.rangeEnd >= roll)
+  getStellarMassTable(starCategory: string) {
+    const result = this.table.values
+      .filter(value => value.starCategory === starCategory)
       .pop();
 
     if (result === undefined) {
-      this.logger.error("Invalid Table Result");
-      this.logger.error(`Category: ${category}, Roll: ${roll}`);
-      this.logger.error(`Table: ${this.table}`);
-      throw new Error("Invalid Table Result");
+      throw new StellarMassLookupError(starCategory, this.table, this.logger);
     } else {
-      this.logger.debug(`Category: ${category}, Roll: ${roll}, Stellar Mass: ${result.mass}`);
-      return result.mass;
+      return result;
     }
   }
 
-  GetRandomStellarMass(category: string): number {
-    return this.GetStellarMass(category, this.table.roll());
+  getStellarMassBounds(starCategory: string): [number, number] {
+    return [
+      Math.min(...this.getStellarMassTable(starCategory).values.map(val => val.mass)),
+      Math.max(...this.getStellarMassTable(starCategory).values.map(val => val.mass))
+    ];
   }
 }
