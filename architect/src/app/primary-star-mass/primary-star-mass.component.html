@@ -25,6 +25,14 @@
   }
 </mat-form-field>
 
-<button mat-fab id="primaryStarCategoryRandomButton" color="accent" (click)="randomPrimaryStarCategory()">
+<button mat-fab id="primaryStarCategoryRandomButton" color="accent" (click)="randomPrimaryStarCategory()" [disabled]="locked">
   <mat-icon>casino</mat-icon>
+</button>
+
+<button mat-fab id="primaryStarCategoryLockButton" color="primary" (click)="lockPrimaryStarCategory()" [disabled]="form.invalid">
+  @if (locked) {
+    <mat-icon>lock</mat-icon>
+  } @else {
+    <mat-icon>lock_open</mat-icon>
+  }
 </button>

@@ -38,6 +38,7 @@ export class PrimaryStarMassComponent implements OnInit {
   starCategories: string[];
 
   form!: FormGroup<PrimaryStarMassForm>;
+  locked!: boolean;
 
   @Output()
   formReady: EventEmitter<FormGroup<PrimaryStarMassForm>> = new EventEmitter<FormGroup<PrimaryStarMassForm>>();
@@ -52,6 +53,8 @@ export class PrimaryStarMassComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.locked = false;
+
     this.form = this.fb.nonNullable.group({
       primaryStarCategory: ['Brown Dwarf', [Validators.required]],
       primaryStarCategoryRoll: [1, [Validators.required, Validators.min(1), Validators.max(100)]]
@@ -71,5 +74,15 @@ export class PrimaryStarMassComponent implements OnInit {
   randomPrimaryStarCategory(): void {
     const roll: number = this.primaryStarCategory.roll();
     this.form.controls.primaryStarCategoryRoll.setValue(roll);
+  }
+
+  lockPrimaryStarCategory(): void {
+    this.locked = !this.locked;
+
+    if (this.locked) {
+      this.form.disable({emitEvent: false});
+    } else {
+      this.form.enable({emitEvent: false});
+    }
   }
 }
